@@ -1,0 +1,37 @@
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+}
+
+.user-card {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 1500px;
+}
+
+.preview {
+    background-color: rgba(247, 247, 247, 1);
+    width: 300px;
+    margin: 100px 25px 100px 25px;
+    padding: 20px 20px 20px 20px;
+    border-radius: 25px;
+}
+
+.preview__header {
+    margin: 0 0 10px 0;
+}
+
+p {
+    margin: 0 0 5px 0;
+}
+
+.preview__avatar {
+    height: 100px;
+    width: 100px;
+}
+
+.btn {
+    margin: 10px 0 0 0;
+}

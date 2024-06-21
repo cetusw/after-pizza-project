@@ -10,15 +10,16 @@ class UserTable
 	public function saveUserToDatabase(User $user): int
 	{
 		try {
-			$query = "INSERT INTO user (first_name, last_name, email, phone, avatar_path) 
-    	VALUES (:first_name, :last_name, :email, :phone, :avatar_path)";
+			$hashedPassword = password_hash($user->getPassword(), PASSWORD_DEFAULT);
+			$query = "INSERT INTO user (login, email, phone, password, avatar_path) 
+    	VALUES (:login, :email, :phone, :password, :avatar_path)";
 			$statement = $this->connection->prepare($query);
 			$statement->execute([
-				':first_name' => $user->getFirstName(),
-				':last_name' => $user->getLastName(),
+				':login' => $user->getLogin(),
 				':email' => $user->getEmail(),
 				':phone' => $user->getPhone(),
-				':avatar_path' => $user->getAvatarPath()
+			  ':password' => $hashedPassword,
+				':avatar_path' => $user->getAvatarPath(),
 			]);
 		} catch (\PDOException $e) {
 			throw new \RuntimeException($e->getMessage(), (int) $e->getCode(), $e);
@@ -26,80 +27,77 @@ class UserTable
 		return (int)$this->connection->lastInsertId();
 	}
 
-	public function findUserInDatabase(int $userId): ?User
+	public function findUserByLogin(string $login): int
 	{
 		try {
-			$query = "SELECT id, first_name, last_name, email, phone, avatar_path
-        FROM user WHERE id = $userId";
-
-			$statement = $this->connection->query($query);
+			$query = "SELECT id, login, email, phone, password, avatar_path FROM user WHERE login = :login";
+			$statement = $this->connection->prepare($query);
+			$statement->bindParam(':login', $login);
+			$statement->execute();
 			if ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
-				return $this->createUserFromRow($row);
+				return $row['id'];
 			}
 		} catch (\PDOException $e) {
 			throw new \RuntimeException($e->getMessage(), (int) $e->getCode(), $e);
 		}
-		return null;
+		return 0;
 	}
 
-	public function findUsersInDatabase(): array
+	public function checkPassword(int $userId, string $password): bool
 	{
-		try {
-			$users = [];
-			$query = "SELECT * FROM user";
-
-			$statement = $this->connection->query($query);
-			while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
-				$users[] = $this->createUserFromRow($row);
+		$query = "SELECT password FROM user WHERE id = $userId";
+		$statement = $this->connection->query($query);
+		if ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+			if (password_verify($password, $row['password'])) {
+				return true;
 			}
-			return $users;
-		} catch (\PDOException $e) {
-			throw new \RuntimeException($e->getMessage(), (int) $e->getCode(), $e);
 		}
+		return false;
 	}
 
 	private function createUserFromRow(array $row): User
 	{
+		// Ensure that all required keys are present in the array
+		$requiredKeys = ['id', 'login', 'email', 'password'];
+		foreach ($requiredKeys as $key) {
+			if (!array_key_exists($key, $row)) {
+				throw new \InvalidArgumentException("Missing required key: $key");
+			}
+		}
+
+		// Create and return the User object
 		return new User(
-			(int)$row['user_id'],
-			$row['first_name'],
-			$row['last_name'],
+			(int)$row['id'],
+			$row['login'],
 			$row['email'],
 			$row['phone'] ?? null,
+			$row['password'],
 			$row['avatar_path'] ?? null
 		);
 	}
+
 	public function addPathToDatabase($userId, string $path): void {
-		$query = "UPDATE user SET avatar_path = '$path' WHERE user_id = $userId;";
+		$query = "UPDATE user SET avatar_path = '$path' WHERE id = $userId;";
 		$statement = $this->connection->prepare($query);
 		$statement->execute();
 	}
 
-	public function deleteUser(int $userId): void
-	{
-
-		$query = "DELETE FROM user WHERE id = $userId;";
-		$statement = $this->connection->prepare($query);
-		if ($statement->execute()) {
-			require __DIR__ . '/../View/delete_user_notification.php';
-		}
-	}
-
 	public function updateUserInDatabase(User $user): void
 	{
+		$hashedPassword = password_hash($user->getPassword(), PASSWORD_DEFAULT);
 		$query = "UPDATE user SET
-              first_name = :first_name, 
-              last_name = :last_name,
+              login = :login,
               email = :email,
               phone = :phone,
+              password = :password,
               avatar_path = :avatar_path  
-              WHERE id = :user_id";
+              WHERE id = :id";
 		$statement = $this->connection->prepare($query);
 		$statement->execute([
-			':first_name' => $user->getFirstName(),
-			':last_name' => $user->getLastName(),
+			':login' => $user->getLogin(),
 			':email' => $user->getEmail(),
 			':phone' => $user->getPhone(),
+			':password' => $hashedPassword,
 			':avatar_path' => $user->getAvatarPath(),
 			':user_id' => $user->getId()
 		]);

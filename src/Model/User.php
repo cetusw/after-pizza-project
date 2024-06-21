@@ -6,10 +6,10 @@ class User
 {
 	public function __construct(
 		private ?int $id,
-		private string $firstName,
-		private string $lastName,
+		private string $login,
 		private string $email,
 		private ?string $phone,
+		private string $password,
 		private ?string $avatarPath
 	)
 	{
@@ -20,14 +20,9 @@ class User
 		return $this->id;
 	}
 
-	public function getFirstName(): string
+	public function getLogin(): string
 	{
-		return $this->firstName;
-	}
-
-	public function getLastName(): string
-	{
-		return $this->lastName;
+		return $this->login;
 	}
 
 	public function getEmail(): string
@@ -40,19 +35,19 @@ class User
 		return $this->phone;
 	}
 
+	public function getPassword(): ?string
+	{
+		return $this->password;
+	}
+
 	public function getAvatarPath(): ?string
 	{
 		return $this->avatarPath;
 	}
 
-	public function setFirstName(string $firstName): ?string
+	public function setLogin(string $login): ?string
 	{
-		return $this->firstName = $firstName;
-	}
-
-	public function setLastName(string $lastName): ?string
-	{
-		return $this->lastName = $lastName;
+		return $this->login = $login;
 	}
 
 	public function setEmail(string $email): ?string
@@ -63,6 +58,11 @@ class User
 	public function setPhone(?string $phone): ?string
 	{
 		return $this->phone = $phone;
+	}
+
+	public function setPassword(string $password): ?string
+	{
+		return $this->password = $password;
 	}
 
 	public function setAvatarPath(?string $avatarPath): ?string

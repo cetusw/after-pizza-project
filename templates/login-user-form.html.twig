@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register user</title>
+  <link rel="stylesheet" href="{{ asset('css/login-style.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+<div class="form">
+  <h1 class="form__title">Authorization</h1>
+  <form action="/user/authenticate" method="post" enctype="multipart/form-data">
+    <div class="form-group first-name">
+      <label for="login">Login:</label>
+      <input name="login" id="login" type="text">
+    </div>
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input name="password" id="password" type="text">
+    </div>
+    <button class="btn btn-primary" type="submit">Login</button>
+  </form>
+</div>
+</body>
