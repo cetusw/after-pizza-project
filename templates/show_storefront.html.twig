@@ -18,6 +18,11 @@
       {% endif %}
     </div>
   {% endfor %}
+    {% if user.role == 1 %}
+      <form action="/product/create" method="post">
+        <button type="submit">+</button>
+      </form>
+    {% endif %}
 </div>
 </body>
 </html>

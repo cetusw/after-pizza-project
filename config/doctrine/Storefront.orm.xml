@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mapping xmlns="https://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="https://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity name="App\Entity\Storefront" table="product">
+
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+        <field name="name" column="name" type="string" length="255" />
+        <field name="description" column="description" type="string" length="255" />
+        <field name="size" column="size" type="string" length="255" />
+        <field name="price" column="price" type="float" />
+        <field name="imagePath" column="image_path" type="string" length="255" />
+    </entity>
+
+</doctrine-mapping>

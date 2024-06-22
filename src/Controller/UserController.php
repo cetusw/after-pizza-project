@@ -2,22 +2,25 @@
 
 namespace App\Controller;
 
+use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Infrastructure\ConnectionProvider;
-use App\Model\User;
-use App\Model\UserTable;
+use App\Entity\User;
+use App\Repository\UserRepository;
 use App\Infrastructure\Config;
 
 class UserController extends AbstractController
 {
-	private UserTable $table;
+	private UserRepository $repository;
 
-	public function __construct()
+	private UserService $service;
+
+	public function __construct(UserService $service, UserRepository $repository)
 	{
-		$connection = ConnectionProvider::connectDatabase();
-		$this->table = new UserTable($connection);
+		$this->service = $service;
+		$this->repository = $repository;
 	}
 
 	public function index(): Response
@@ -34,9 +37,10 @@ class UserController extends AbstractController
 			$request->get('phone'),
 			$request->get('password'),
 			$request->get('avatar_path'),
+			0,
 		);
 
-		$userId = $this->table->saveUserToDatabase($user);
+		$userId = $this->repository->saveUserToDatabase($user);
 		$this->saveAvatar($userId);
 
 		return $this->redirectToRoute(
@@ -45,47 +49,9 @@ class UserController extends AbstractController
 		);
 	}
 
-	public function loginUserForm(Request $request): Response
+	public function loginUser(Request $request): Response
 	{
 		return $this->render('login-user-form.html.twig');
-	}
-
-	public function showUser(int $userId): void
-	{
-		$user = $this->table->findUserInDatabase($userId);
-		if ($user === null) {
-			throw new \RuntimeException('User Not Found');
-		} else {
-			require __DIR__ . '/../View/show_user_form.php';
-		}
-	}
-
-	public function showUsersList(): void
-	{
-		$users = $this->table->findUsersInDatabase();
-		if ($users === []) {
-			throw new \RuntimeException('Users Not Found');
-		} else {
-			require __DIR__ . '/../View/show_users_list_form.php';
-		}
-	}
-
-	public function updateUser(int $userId, array $newData): void
-	{
-		$user = $this->table->findUserInDatabase($userId);
-		$user->setLogin($newData['login']);
-		empty($newData['email']) ? $user->setEmail(null) : $user->setEmail($newData['email']);
-		empty($newData['phone']) ? $user->setPhone(null) : $user->setPhone($newData['phone']);
-		$user->setPassword($newData['password']);
-		empty($newData['avatar_path']) ? $user->setAvatarPath(null) : $user->setAvatarPath($newData['avatar_path']);
-		$user->setAvatarPath($newData['avatar_path']);
-
-		$this->table->updateUserInDatabase($user);
-		$this->saveAvatar($userId);
-
-		$redirectUrl = "/show_user.php?user_id=$userId";
-		header('Location: ' . $redirectUrl, true, 303);
-		die();
 	}
 
 	private function saveAvatar(int $userId): bool
@@ -104,7 +70,7 @@ class UserController extends AbstractController
 		if (!move_uploaded_file($_FILES['avatar_path']['tmp_name'], $newPath)) {
 			throw new \RuntimeException('Failed to move uploaded file');
 		}
-		$this->table->addPathToDatabase($userId, $newPath);
+		$this->repository->addPathToDatabase($userId, $newPath);
 		return true;
 	}
 
@@ -112,12 +78,13 @@ class UserController extends AbstractController
 	{
 		$login = $request->get('login');
 		$password = $request->get('password');
-		$userId = $this->table->findUserByLogin($login);
-		if ($this->table->checkPassword($userId, $password)) {
+		$user = $this->repository->findUserByLogin($login);
+		if ($this->repository->checkPassword($user->getId(), $password)) {
 			session_name('auth');
 			session_start();
-			$_SESSION['user_id'] = $userId;
+			$_SESSION['user_id'] = $user->getId();;
 			$_SESSION['login'] = $login;
+			$_SESSION['role'] = $user->getRole();
 			return $this->redirectToRoute(
 				'show_storefront',
 				(array)Response::HTTP_SEE_OTHER

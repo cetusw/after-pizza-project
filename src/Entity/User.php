@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model;
+namespace App\Entity;
 
 class User
 {
@@ -10,7 +10,8 @@ class User
 		private string $email,
 		private ?string $phone,
 		private string $password,
-		private ?string $avatarPath
+		private ?string $avatarPath,
+		private int $role,
 	)
 	{
 	}
@@ -35,7 +36,7 @@ class User
 		return $this->phone;
 	}
 
-	public function getPassword(): ?string
+	public function getPassword(): string
 	{
 		return $this->password;
 	}
@@ -45,12 +46,17 @@ class User
 		return $this->avatarPath;
 	}
 
-	public function setLogin(string $login): ?string
+	public function getRole(): int
+	{
+		return $this->role;
+	}
+
+	public function setLogin(string $login): string
 	{
 		return $this->login = $login;
 	}
 
-	public function setEmail(string $email): ?string
+	public function setEmail(string $email): string
 	{
 		return $this->email = $email;
 	}
@@ -60,7 +66,7 @@ class User
 		return $this->phone = $phone;
 	}
 
-	public function setPassword(string $password): ?string
+	public function setPassword(string $password): string
 	{
 		return $this->password = $password;
 	}
@@ -68,5 +74,10 @@ class User
 	public function setAvatarPath(?string $avatarPath): ?string
 	{
 		return $this->avatarPath = $avatarPath;
+	}
+
+	public function setRole(int $role): int
+	{
+		return $this->role = $role;
 	}
 }

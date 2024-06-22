@@ -6,9 +6,9 @@ register_user:
     path: /user/registration
     controller: App\Controller\UserController::registerUser
 
-login_user_form:
+login_user:
     path: /user/login
-    controller: App\Controller\UserController::loginUserForm
+    controller: App\Controller\UserController::loginUser
 
 authenticate_user:
     path: /user/authenticate
@@ -17,3 +17,7 @@ authenticate_user:
 show_storefront:
     path: /catalog
     controller: App\Controller\StorefrontController::showStorefront
+
+create_product:
+    path: /product/create
+    controller: App\Controller\StorefrontController::createProduct
