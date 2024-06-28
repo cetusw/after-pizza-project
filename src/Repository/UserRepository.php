@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Storefront;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -31,8 +32,9 @@ class UserRepository
 
 	public function getCurrentUser(): ?User
 	{
-		session_name('auth');
-		session_start();
+		if (session_status() == PHP_SESSION_NONE) {
+			session_start();
+		}
 		return $this->repository->findOneBy(['id' => $_SESSION['user_id']]);
 	}
 

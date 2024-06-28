@@ -6,7 +6,6 @@ use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Infrastructure\ConnectionProvider;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Infrastructure\Config;
@@ -25,7 +24,7 @@ class UserController extends AbstractController
 
 	public function index(): Response
 	{
-		return $this->render('register-user-form.html.twig');
+		return $this->render('register_user_form.html.twig');
 	}
 
 	public function registerUser(Request $request): Response
@@ -43,15 +42,12 @@ class UserController extends AbstractController
 		$userId = $this->repository->saveUserToDatabase($user);
 		$this->saveAvatar($userId);
 
-		return $this->redirectToRoute(
-			'show_storefront',
-			(array)Response::HTTP_SEE_OTHER
-		);
+		return $this->redirectToRoute('show_storefront');
 	}
 
 	public function loginUser(Request $request): Response
 	{
-		return $this->render('login-user-form.html.twig');
+		return $this->render('login_user_form.html.twig');
 	}
 
 	private function saveAvatar(int $userId): bool
@@ -78,22 +74,30 @@ class UserController extends AbstractController
 	{
 		$login = $request->get('login');
 		$password = $request->get('password');
+
 		$user = $this->repository->findUserByLogin($login);
+
 		if ($this->repository->checkPassword($user->getId(), $password)) {
-			session_name('auth');
-			session_start();
+			if (session_status() == PHP_SESSION_NONE) {
+				session_start();
+			}
 			$_SESSION['user_id'] = $user->getId();;
 			$_SESSION['login'] = $login;
 			$_SESSION['role'] = $user->getRole();
-			return $this->redirectToRoute(
-				'show_storefront',
-				(array)Response::HTTP_SEE_OTHER
-			);
+			$_SESSION['cart'] = [];
+
+			return $this->redirectToRoute('show_storefront');
 		}	else {
-			return $this->redirectToRoute(
-				'login_user_form',
-				(array)Response::HTTP_SEE_OTHER
-			);
+			return $this->redirectToRoute('login_user_form');
 		}
+	}
+
+	public function logoutUser(Request $request): Response
+	{
+		if (session_status() == PHP_SESSION_NONE) {
+			session_start();
+		}
+		session_destroy();
+		return $this->redirectToRoute('login_user');
 	}
 }

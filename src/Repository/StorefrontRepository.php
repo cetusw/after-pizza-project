@@ -3,7 +3,6 @@
 namespace App\Repository;
 
 use App\Entity\Storefront;
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 
@@ -20,5 +19,23 @@ class StorefrontRepository
 	public function findProductsInDatabase(): array
 	{
 		return $this->repository->findAll();
+	}
+
+	public function findProductInDatabase(int $id): ?Storefront
+	{
+		return $this->repository->findOneBy(['id' => $id]);
+	}
+
+	public function saveProductToDatabase(Storefront $storefront): int
+	{
+		$this->entityManager->persist($storefront);
+		$this->entityManager->flush();
+		return $storefront->getId();
+	}
+
+	public function deleteProductFromDatabase(Storefront $storefront): void
+	{
+		$this->entityManager->remove($storefront);
+		$this->entityManager->flush();
 	}
 }

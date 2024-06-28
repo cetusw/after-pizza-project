@@ -14,10 +14,43 @@ authenticate_user:
     path: /user/authenticate
     controller: App\Controller\UserController::authenticateUser
 
+logout:
+    path: /user/logout
+    controller: App\Controller\UserController::logoutUser
+
 show_storefront:
     path: /catalog
     controller: App\Controller\StorefrontController::showStorefront
 
-create_product:
+create_product_form:
     path: /product/create
+    controller: App\Controller\StorefrontController::createProductForm
+
+create_product:
+    path: /product/save
     controller: App\Controller\StorefrontController::createProduct
+
+show_product:
+    path: /product/show
+    controller: App\Controller\StorefrontController::showProduct
+
+delete_product:
+    path: /product/delete
+    controller: App\Controller\StorefrontController::deleteProduct
+
+add_product:
+    path: /product/add
+    controller: App\Controller\CartController::addProduct
+
+show_cart:
+    path: /cart
+    controller: App\Controller\CartController::showCart
+
+remove_product_from_cart:
+    path: /cart/product/remove
+    controller: App\Controller\CartController::removeProduct
+
+remove_all_product_from_cart:
+    path: /cart/product/all/remove
+    controller: App\Controller\CartController::removeAllProduct
+
