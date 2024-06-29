@@ -27,19 +27,9 @@ class Order
 		return $this->customerName;
 	}
 
-	public function setCustomerName(string $customerName): void
-	{
-		$this->customerName = $customerName;
-	}
-
 	public function getEmail(): string
 	{
 		return $this->email;
-	}
-
-	public function setEmail(string $email): void
-	{
-		$this->email = $email;
 	}
 
 	public function getPhone(): ?string
@@ -47,19 +37,9 @@ class Order
 		return $this->phone;
 	}
 
-	public function setPhone(?string $phone): void
-	{
-		$this->phone = $phone;
-	}
-
 	public function getAddress(): string
 	{
 		return $this->address;
-	}
-
-	public function setAddress(string $address): void
-	{
-		$this->address = $address;
 	}
 
 	public function getComments(): string
@@ -67,28 +47,48 @@ class Order
 		return $this->comments;
 	}
 
-	public function setComments(string $comments): void
-	{
-		$this->comments = $comments;
-	}
-
 	public function getProducts(): string
 	{
 		return $this->products;
 	}
 
-	public function setProducts(string $products): void
-	{
-		$this->products = $products;
-	}
-
-	public function getOrderDate(): \DateTimeInterface
+	public function getOrderDate(): \DateTime
 	{
 		return $this->orderDate;
 	}
 
-	public function setOrderDate(\DateTimeInterface $orderDate): void
+	public function setOrderDate(\DateTime $orderDate): void
 	{
 		$this->orderDate = $orderDate;
+	}
+
+	public function setCustomerName(string $customerName): void
+	{
+		$this->customerName = $customerName;
+	}
+
+	public function setEmail(string $email): void
+	{
+		$this->email = $email;
+	}
+
+	public function setPhone(?string $phone): void
+	{
+		$this->phone = $phone;
+	}
+
+	public function setAddress(string $address): void
+	{
+		$this->address = $address;
+	}
+
+	public function setComments(string $comments): void
+	{
+		$this->comments = $comments;
+	}
+
+	public function setProducts(string $products): void
+	{
+		$this->products = $products;
 	}
 }

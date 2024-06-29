@@ -2,7 +2,6 @@
 
 namespace App\Repository;
 
-use App\Entity\Storefront;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
@@ -45,11 +44,5 @@ class UserRepository
 			return true;
 		}
 		return false;
-	}
-
-	public function addPathToDatabase($userId, string $path): void {
-		$query = "UPDATE user SET avatar_path = '$path' WHERE id = $userId;";
-		$statement = $this->connection->prepare($query);
-		$statement->execute();
 	}
 }

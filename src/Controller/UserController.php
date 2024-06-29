@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\User;
 use App\Repository\UserRepository;
-use App\Infrastructure\Config;
 
 class UserController extends AbstractController
 {
@@ -48,26 +47,6 @@ class UserController extends AbstractController
 	public function loginUser(Request $request): Response
 	{
 		return $this->render('login_user_form.html.twig');
-	}
-
-	private function saveAvatar(int $userId): bool
-	{
-		$avatarPath = $_FILES['avatar_path'] ?? null;
-		if ($avatarPath === null || $avatarPath['error'] !== UPLOAD_ERR_OK) {
-			return false;
-		}
-		$fileName = $_FILES['avatar_path']['tmp_name'];
-		$fileType = mime_content_type($fileName);
-		if (!in_array($fileType, Config::getValidTypes())) {
-			throw new \RuntimeException('Invalid file type');
-		}
-		$newFileName = $userId . "." . pathinfo($fileName, PATHINFO_EXTENSION);
-		$newPath = './uploads/' . $newFileName;
-		if (!move_uploaded_file($_FILES['avatar_path']['tmp_name'], $newPath)) {
-			throw new \RuntimeException('Failed to move uploaded file');
-		}
-		$this->repository->addPathToDatabase($userId, $newPath);
-		return true;
 	}
 
 	public function authenticateUser(Request $request): Response
