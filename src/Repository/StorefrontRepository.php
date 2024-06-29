@@ -38,4 +38,9 @@ class StorefrontRepository
 		$this->entityManager->remove($storefront);
 		$this->entityManager->flush();
 	}
+
+	public function addPathToProductDatabase(int $id, string $path): void
+	{
+
+	}
 }

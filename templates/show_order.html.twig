@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Card</title>
+  <link rel="stylesheet" href="/css/order-card-style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+<div class="card">
+  <h1 class="card__title">Thanks for your Order</h1>
+  <div class="card-body">
+    <div class="card-group">{{ order.orderId }}</div>
+    <div class="card-group">{{ order.customerName }}</div>
+    <div class="card-group">{{ order.email }}</div>
+    <div class="card-group">{{ order.phone }}</div>
+    <div class="card-group">{{ order.address }}</div>
+    <div class="card-group">{{ order.comments }}</div>
+    <div class="card-group">{{ order.products }}</div>
+    <div class="card-group">{{ order.orderDate|date('Y-m-d') }}</div>
+    <a href="/catalog" class="btn btn-primary">Go to Store</a>
+  </div>
+</div>
+</body>
+</html>

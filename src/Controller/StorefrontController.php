@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Storefront;
+use App\Infrastructure\Config;
 use App\Repository\StorefrontRepository;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -38,13 +39,15 @@ class StorefrontController extends AbstractController
 
 	public function createProduct(Request $request): Response
 	{
+		$newImage = $this->saveImage();
+
 		$product = new Storefront(
 			null,
 			$request->get('name'),
 		  $request->get('description'),
 			$request->get('size'),
 			$request->get('price'),
-			$request->get('image_path'),
+			$newImage,
 		);
 
 		$productId = $this->repository->saveProductToDatabase($product);
@@ -73,6 +76,25 @@ class StorefrontController extends AbstractController
 		}
 		$this->repository->deleteProductFromDatabase($product);
 		return $this->redirectToRoute('show_storefront');
+	}
+
+	private function saveImage(): string
+	{
+		$imagePath = $_FILES['imagePath'] ?? null;
+		if ($imagePath === null || $imagePath['error'] !== UPLOAD_ERR_OK) {
+			return 'placeholder.png';
+		}
+		$fileName = $_FILES['imagePath']['tmp_name'];
+		$fileType = mime_content_type($fileName);
+		if (!in_array($fileType, Config::getValidTypes())) {
+			throw new \RuntimeException('Invalid file type');
+		}
+		$newFileName = uniqid('product_', true) . "." . pathinfo($fileName, PATHINFO_EXTENSION);
+		$newPath = 'uploads/' . $newFileName;
+		if (!move_uploaded_file($_FILES['imagePath']['tmp_name'], $newPath)) {
+			throw new \RuntimeException('Failed to move uploaded file');
+		}
+		return $newFileName;
 	}
 
 }

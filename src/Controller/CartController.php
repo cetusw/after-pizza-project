@@ -61,7 +61,7 @@ class CartController extends AbstractController
 		]);
 	}
 
-	public function removeProduct(Request $request): Response
+	public function removeProduct(Request $request): RedirectResponse
 	{
 		if (session_status() == PHP_SESSION_NONE) {
 			session_start();
@@ -75,7 +75,9 @@ class CartController extends AbstractController
 			unset($_SESSION['cart'][$request->get('id')]);
 		}
 
-		return $this->redirectToRoute('show_cart');
+		$referer = $request->headers->get('referer');
+
+		return new RedirectResponse($referer);
 	}
 
 	public function removeAllProduct(Request $request): Response

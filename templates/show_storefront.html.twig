@@ -6,35 +6,54 @@
   <link rel="stylesheet" href="{{ asset('css/show-storefront-style.css') }}">
 </head>
 <body>
+
 <div class="nav">
   <a href="/catalog">Catalog</a>
   <a href="/user/logout">Log Out</a>
-  <a href="/cart">Cart</a>
+  {% if user.role == 0 %}
+    <a href="/cart">Cart</a>
+  {% endif %}
 </div>
-<div class="product-card">
+<div class="d-flex flex-wrap">
   {% for product in products %}
-    <a href="/product/show?id={{ product.id }}" type="button">
-      <div class="preview">
-        <h1 class="preview__header">{{ product.name }}</h1>
-        <p>{{ product.description }}</p>
-        <p>Size: {{ product.size }}</p>
-        <p>Price: {{ product.price }} $</p>
-        {% if product.imagePath is not null %}
-          <img class="preview__image" src="{{ product.imagePath }}" alt="Product Image">
-        {% endif %}
+    <div class="card m-2" style="width: 18rem;">
+      <img class="card-img-top" src="uploads/{{ product.imagePath }}" alt="Product Image">
+      <div class="card-body">
+        <h2 class="card-title">{{ product.name }}</h2>
+        <p class="card-text">
+          {{ product.description }}<br>
+          {% if product.size is defined %}
+            Size: {{ product.size }}<br>
+          {% endif %}
+          {% if cart[product.id] is defined %}
+            Price: {{ product.price * cart[product.id]}} $
+          {% else %}
+            Price: {{ product.price }} $
+          {% endif %}
+        </p>
+        <span>
+          {% if user.role == 0 %}
+            {% if cart[product.id] is defined %}
+              <a href="/cart/product/remove?id={{ product.id }}" class="btn btn-danger">-</a>
+            {% endif %}
+            <a href="/product/add?id={{ product.id }}" class="btn btn-primary">Add to Cart</a>
+          {% endif %}
+          {% if cart[product.id] is defined %}
+            <span class="card-text">{{ cart[product.id] }}</span>
+          {% endif %}
+        </span>
         {% if user.role == 1 %}
           <a href="/product/delete?id={{ product.id }}" class="btn btn-danger">Delete</a>
         {% endif %}
-        {% if user.role == 0 %}
-          <a href="/product/add?id={{ product.id }}" class="btn btn-primary">Add to Cart</a>
-        {% endif %}
       </div>
-    </a>
+    </div>
   {% endfor %}
   {% if user.role == 1 %}
-    <form action="/product/create" method="post">
-      <button class="preview" type="submit">+</button>
-    </form>
+    <div class="m-2" style="width: 18rem;">
+      <form action="/product/create" method="post">
+        <button class="btn btn-primary w-100" type="submit">+</button>
+      </form>
+    </div>
   {% endif %}
 </div>
 </body>

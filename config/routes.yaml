@@ -54,3 +54,15 @@ remove_all_product_from_cart:
     path: /cart/product/all/remove
     controller: App\Controller\CartController::removeAllProduct
 
+order:
+    path: /order
+    controller: App\Controller\OrderController::orderForm
+
+order_submit:
+    path: /order/submit
+    controller: App\Controller\OrderController::orderSubmit
+
+show_order:
+    path: /order/show
+    controller: App\Controller\OrderController::showOrder
+
