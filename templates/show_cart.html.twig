@@ -21,7 +21,11 @@
         <p>
           {{ product.description }}<br>
           Size: {{ product.size }}<br>
-          Price: {{ product.price }} $<br>
+          {% if cart[product.id] is defined %}
+            Price: {{ product.price * cart[product.id]}} $
+          {% else %}
+            Price: {{ product.price }} $
+          {% endif %}
         </p>
         <span>
         <a href="/cart/product/remove?id={{ product.id }}" class="btn btn-danger">-</a>
