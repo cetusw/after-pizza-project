@@ -17,14 +17,14 @@
     <div class="card m-2" style="width: 18rem;">
       <img class="card-img-top" src="uploads/{{ product.imagePath }}" alt="Product Image">
       <div class="card-body">
-        <h2 class="card-title">{{ product.name }}</h2>
+        <a href="/product/show?id={{ product.id }}"><h2 class="card-title">{{ product.name }}</h2></a>
         <p>
           {{ product.description }}<br>
           Size: {{ product.size }}<br>
           {% if cart[product.id] is defined %}
-            Price: {{ product.price * cart[product.id]}} $
+            Price: ${{ product.price * cart[product.id]}}
           {% else %}
-            Price: {{ product.price }} $
+            Price: ${{ product.price }}
           {% endif %}
         </p>
         <span>

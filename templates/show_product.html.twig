@@ -13,7 +13,7 @@
         <div class="card-group">{{ product.name }}</div>
         <div class="card-group">{{ product.description }}</div>
         <div class="card-group">{{ product.size }}</div>
-        <div class="card-group">{{ product.price }}</div>
+        <div class="card-group">${{ product.price }}</div>
         {% if product.imagePath is not null %}
             <img class="preview__image" src="../uploads/{{ product.imagePath }}" alt="Product Image">
         {% endif %}

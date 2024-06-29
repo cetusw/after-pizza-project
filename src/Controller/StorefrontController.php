@@ -88,11 +88,14 @@ class StorefrontController extends AbstractController
 		if ($imagePath === null || $imagePath['error'] !== UPLOAD_ERR_OK) {
 			return 'placeholder.png';
 		}
+
 		$fileName = $_FILES['imagePath']['tmp_name'];
 		$fileType = mime_content_type($fileName);
+
 		if (!in_array($fileType, Config::getValidTypes())) {
 			throw new \RuntimeException('Invalid file type');
 		}
+
 		$newFileName = uniqid('product_', true) . "." . pathinfo($fileName, PATHINFO_EXTENSION);
 		$newPath = 'uploads/' . $newFileName;
 		if (!move_uploaded_file($_FILES['imagePath']['tmp_name'], $newPath)) {
