@@ -66,3 +66,7 @@ show_order:
     path: /order/show
     controller: App\Controller\OrderController::showOrder
 
+clear_cart:
+    path: /cart/clear
+    controller: App\Controller\CartController::clearCart
+

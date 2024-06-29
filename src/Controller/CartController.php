@@ -88,4 +88,13 @@ class CartController extends AbstractController
 
 		return $this->redirectToRoute('show_cart');
 	}
+
+	public function clearCart(Request $request): Response
+	{
+		if (session_status() == PHP_SESSION_NONE) {
+			session_start();
+		}
+		$_SESSION['cart'] = [];
+		return $this->redirectToRoute('show_storefront');
+	}
 }
