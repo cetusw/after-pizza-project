@@ -24,21 +24,28 @@ class UserController extends AbstractController
 
 	public function registerUser(Request $request): Response
 	{
+		$hashedPassword = password_hash($request->request->get('password'), PASSWORD_DEFAULT);
 		$user = new User(
 			null,
 			$request->get('login'),
 			$request->get('email'),
 			$request->get('phone'),
-			$request->get('password'),
+			$hashedPassword,
 			0,
 		);
 
 		$userId = $this->repository->saveUserToDatabase($user);
 
+		if (session_status() == PHP_SESSION_NONE) {
+			session_start();
+		}
+		$_SESSION['user_id'] = $userId;
+		$_SESSION['cart'] = [];
+
 		return $this->redirectToRoute('show_storefront');
 	}
 
-	public function loginUser(Request $request): Response
+	public function loginUser(): Response
 	{
 		return $this->render('login_user_form.html.twig');
 	}
@@ -60,12 +67,12 @@ class UserController extends AbstractController
 			$_SESSION['cart'] = [];
 
 			return $this->redirectToRoute('show_storefront');
-		}	else {
-			return $this->redirectToRoute('login_user_form');
 		}
+
+		return $this->redirectToRoute('login_user_form');
 	}
 
-	public function logoutUser(Request $request): Response
+	public function logoutUser(): Response
 	{
 		if (session_status() == PHP_SESSION_NONE) {
 			session_start();

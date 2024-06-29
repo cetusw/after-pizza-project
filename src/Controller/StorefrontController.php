@@ -23,6 +23,10 @@ class StorefrontController extends AbstractController
 
 	public function showStorefront(): Response
 	{
+		if (session_status() == PHP_SESSION_NONE) {
+			session_start();
+		}
+
 		$user = $this->userRepository->getCurrentUser();
 		$products = $this->repository->findProductsInDatabase();
 
