@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Service\UserService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,11 +12,8 @@ class UserController extends AbstractController
 {
 	private UserRepository $repository;
 
-	private UserService $service;
-
-	public function __construct(UserService $service, UserRepository $repository)
+	public function __construct(UserRepository $repository)
 	{
-		$this->service = $service;
 		$this->repository = $repository;
 	}
 
@@ -34,12 +30,10 @@ class UserController extends AbstractController
 			$request->get('email'),
 			$request->get('phone'),
 			$request->get('password'),
-			$request->get('avatar_path'),
 			0,
 		);
 
 		$userId = $this->repository->saveUserToDatabase($user);
-		$this->saveAvatar($userId);
 
 		return $this->redirectToRoute('show_storefront');
 	}

@@ -13,7 +13,6 @@
         <field name="email" column="email" type="string" length="255" />
         <field name="phone" column="phone" type="string" length="255" />
         <field name="password" column="password" type="string" length="255" />
-        <field name="avatarPath" column="avatar_path" type="string" length="255" />
         <field name="role" column="role" type="integer" />
     </entity>
 

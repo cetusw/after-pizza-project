@@ -10,7 +10,6 @@ class User
 		private string $email,
 		private ?string $phone,
 		private string $password,
-		private ?string $avatarPath,
 		private int $role,
 	)
 	{
@@ -41,11 +40,6 @@ class User
 		return $this->password;
 	}
 
-	public function getAvatarPath(): ?string
-	{
-		return $this->avatarPath;
-	}
-
 	public function getRole(): int
 	{
 		return $this->role;
@@ -69,11 +63,6 @@ class User
 	public function setPassword(string $password): string
 	{
 		return $this->password = $password;
-	}
-
-	public function setAvatarPath(?string $avatarPath): ?string
-	{
-		return $this->avatarPath = $avatarPath;
 	}
 
 	public function setRole(int $role): int
